@@ -3,6 +3,7 @@ package com.simibubi.create.infrastructure.gametest;
 import java.util.Collection;
 
 import com.simibubi.create.infrastructure.gametest.tests.TestContraptions;
+import com.simibubi.create.infrastructure.gametest.tests.TestDeployer;
 import com.simibubi.create.infrastructure.gametest.tests.TestFluids;
 import com.simibubi.create.infrastructure.gametest.tests.TestItems;
 import com.simibubi.create.infrastructure.gametest.tests.TestMisc;
@@ -19,6 +20,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 public class CreateGameTests {
 	private static final Class<?>[] testHolders = {
 			TestContraptions.class,
+			TestDeployer.class,
 			TestFluids.class,
 			TestItems.class,
 			TestMisc.class,

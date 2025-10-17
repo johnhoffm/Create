@@ -25,8 +25,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.LeverBlock;
 import net.minecraft.world.level.block.RedstoneLampBlock;
+import net.minecraft.world.level.block.TurtleEggBlock;
+import net.minecraft.world.item.enchantment.Enchantments;
 
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 @GameTestGroup(path = "contraptions")
 public class TestContraptions {
