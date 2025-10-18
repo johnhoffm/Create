@@ -403,18 +403,30 @@ public class DeployerHandler {
 			// hack to prevent DoublePlantBlock from dropping a duplicate item
 			world.setBlock(pos, Blocks.AIR.defaultBlockState(), 35);
 			world.setBlock(posUp, Blocks.AIR.defaultBlockState(), 35);
+			
+			// Force plant drops
+			Block.getDrops(blockstate, world, pos, blockEntity, player, prevHeldItem)
+			.forEach(item -> player.getInventory().placeItemBackInInventory(item));
 		} else {
+			// Capture drops before removing the block
+			List<ItemEntity> capturedDrops = new ArrayList<>();
+			safePlayerDestroy(blockstate, world, pos, player, blockEntity, prevHeldItem, capturedDrops);
+			if (canHarvest) {
+				capturedDrops.forEach(e -> player.getInventory().placeItemBackInInventory(e.getItem()));
+			}
+
+			// If the block still exists, do not remove it
+			BlockState stateAfter = world.getBlockState(pos);
+			if (!stateAfter.isAir() && stateAfter != blockstate) {
+				return true;
+			}
+
 			if (!blockstate.onDestroyedByPlayer(world, pos, player, canHarvest, world.getFluidState(pos)))
 				return true;
-		}
+	}
 
 		blockstate.getBlock()
 			.destroy(world, pos, blockstate);
-		if (!canHarvest)
-			return true;
-
-		Block.getDrops(blockstate, world, pos, blockEntity, player, prevHeldItem)
-			.forEach(item -> player.getInventory().placeItemBackInInventory(item));
 		blockstate.spawnAfterBreak(world, pos, prevHeldItem, true);
 		return true;
 	}
@@ -428,6 +440,20 @@ public class DeployerHandler {
 			for (ItemEntity itemEntity : drops)
 				player.getInventory().placeItemBackInInventory(itemEntity.getItem());
 			return result;
+		} finally {
+			CAPTURED_BLOCK_DROPS.remove(pos);
+		}
+	}
+
+	public static void safePlayerDestroy(BlockState state, Level world, BlockPos pos, @Nullable Player player,
+										 @Nullable net.minecraft.world.level.block.entity.BlockEntity blockEntity,
+										 ItemStack usedTool, List<ItemEntity> capturedDrops) {
+		if (player == null)
+			return;
+		
+		CAPTURED_BLOCK_DROPS.put(pos, capturedDrops);
+		try {
+			state.getBlock().playerDestroy(world, player, pos, state, blockEntity, usedTool);
 		} finally {
 			CAPTURED_BLOCK_DROPS.remove(pos);
 		}

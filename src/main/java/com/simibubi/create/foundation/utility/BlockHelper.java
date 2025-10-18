@@ -229,17 +229,6 @@ public class BlockHelper {
 			for (ItemStack itemStack : Block.getDrops(state, (ServerLevel) world, pos, blockEntity, player, usedTool))
 				droppedItemCallback.accept(itemStack);
 
-			// Simulating IceBlock#playerDestroy. Not calling method directly as
-			// it would roll the loot table (or crash if the player is null)
-			if (state.getBlock() instanceof IceBlock && usedTool.getEnchantmentLevel(Enchantments.SILK_TOUCH) == 0) {
-				if (!world.dimensionType().ultraWarm()) {
-					BlockState below = world.getBlockState(pos.below());
-					if (below.blocksMotion() || below.liquid()) {
-						fluidState = IceBlock.meltsInto().getFluidState();
-					}
-				}
-			}
-
 			state.spawnAfterBreak((ServerLevel) world, pos, ItemStack.EMPTY, true);
 		}
 
