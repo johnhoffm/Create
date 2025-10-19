@@ -22,4 +22,9 @@ public @interface GameTestGroup {
 	 * The namespace to search for test structures in.
 	 */
 	String namespace() default Create.ID;
+
+	/**
+	 * The batch name for all tests in this group. Individual tests can override this.
+	 */
+	String batch() default "defaultBatch";
 }

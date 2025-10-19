@@ -76,10 +76,12 @@ public class CreateTestFunction extends TestFunction {
 		String structure = "%s:gametest/%s/%s".formatted(group.namespace(), group.path(), gt.template());
 		Rotation rotation = StructureUtils.getRotationForRotationSteps(gt.rotationSteps());
 
+		String batch = gt.batch().equals("defaultBatch") ? group.batch() : gt.batch();
+
 		String fullName = owner.getName() + "." + method.getName();
 		return new CreateTestFunction(
 				// use structure for test name since that's what MC fills structure blocks with for some reason
-				fullName, simpleName, gt.batch(), structure, structure, rotation, gt.timeoutTicks(), gt.setupTicks(),
+				fullName, simpleName, batch, structure, structure, rotation, gt.timeoutTicks(), gt.setupTicks(),
 				gt.required(), gt.requiredSuccesses(), gt.attempts(), asConsumer(method)
 		);
 	}
